@@ -49,22 +49,23 @@ function makeCard(data) {
         <div class="photo-card">
                 <img class="gallery__image" src="${value.webformatURL}"
                 alt="${value.tags}" 
+                width = "280"
                 loading="lazy" />
             <div class="info">
                 <p class="info-item">
-                    <b>Likes</b>
+                    <b>Likes</b><br>
                     ${value.likes}
                 </p>
                 <p class="info-item">
-                    <b>Views</b>
+                    <b>Views</b><br>
                     ${value.views}
                 </p>
                 <p class="info-item">
-                    <b>Comments</b>
+                    <b>Comments</b><br>
                     ${value.comments}
                 </p>
                 <p class="info-item">
-                    <b>Downloads</b>
+                    <b>Downloads</b><br>
                     ${value.downloads}
                 </p>
             </div>
