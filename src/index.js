@@ -1,5 +1,8 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
+// Дополнительный импорт стилей
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 
 const formRef = document.querySelector('.search-form')
@@ -12,13 +15,20 @@ let bigObj = []
 
 formRef.addEventListener('input', getInfo)
 formRef.addEventListener('submit', submitInfo)
+cardRef.addEventListener('click', onClick);
 
-
+function onClick(evt) { //? отмена действий от браузера по умолчанию
+    evt.preventDefault();
+}
 
 function getInfo(event) {
     // console.log(event.target.value);
     ourObject = `q=${event.target.value.trim()}&image_type=photo&orientation=horizontal&safesearch=true`;
 }
+
+// let lightbox = new SimpleLightbox('.gallery a', { captionsData: "alt", captionDelay: 250 }); //!создаст слайдер с задержкой и подписью сверху
+let lightbox = new SimpleLightbox('.gallery a');
+
 
 function submitInfo(event) {
     event.preventDefault()
@@ -47,10 +57,9 @@ function makeCard(data) {
     console.log(data);
     let markup = (data.hits).map(value => `
         <div class="photo-card">
-                <img class="gallery__image" src="${value.webformatURL}"
-                alt="${value.tags}" 
-                width = "280"
-                loading="lazy" />
+                <a href = "${value.largeImageURL}">
+                    <img class="small_image" src="${value.webformatURL}" alt="${value.tags}" loading="lazy" />
+                </a>
             <div class="info">
                 <p class="info-item">
                     <b>Likes</b><br>
