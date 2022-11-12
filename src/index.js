@@ -45,6 +45,32 @@ function fetchCard() {
 
 function makeCard(data) {
     console.log(data);
+    let markup = (data.hits).map(value => `
+        <div class="photo-card">
+                <img src="${value.webformatURL}"
+                alt="${value.tags}" 
+                loading="lazy" />
+            <div class="info">
+                <p class="info-item">
+                    <b>Likes</b>
+                    ${value.likes}
+                </p>
+                <p class="info-item">
+                    <b>Views</b>
+                    ${value.views}
+                </p>
+                <p class="info-item">
+                    <b>Comments</b>
+                    ${value.comments}
+                </p>
+                <p class="info-item">
+                    <b>Downloads</b>
+                    ${value.downloads}
+                </p>
+            </div>
+        </div>
+            `).join('')
+                cardRef.innerHTML = markup;
 }
 
 function noPages() {
