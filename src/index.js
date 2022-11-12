@@ -47,7 +47,7 @@ function makeCard(data) {
     console.log(data);
     let markup = (data.hits).map(value => `
         <div class="photo-card">
-                <img src="${value.webformatURL}"
+                <img class="gallery__image" src="${value.webformatURL}"
                 alt="${value.tags}" 
                 loading="lazy" />
             <div class="info">
