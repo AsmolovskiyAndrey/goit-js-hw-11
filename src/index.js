@@ -12,7 +12,7 @@ const loadMoreRef = document.querySelector('.load-more')
 
 
 const URL = 'https://pixabay.com/api/?key=31273147-56325c5e652f187dddce9fa62'
-let ourObject = ''
+let fullKey = ''
 let lightbox = new SimpleLightbox('.gallery a');
 let page = 1;
 
@@ -40,7 +40,7 @@ function loadMore() {
 }
 
 function getInfo(event) {
-    ourObject = `q=${event.target.value.trim()}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`;
+    fullKey = `q=${event.target.value.trim()}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`;
 }
 
 function submitInfo(event) {
@@ -48,10 +48,16 @@ function submitInfo(event) {
     page = 1
     cardRef.innerHTML = "";
     loadMoreRef.style.visibility = "hidden";
+    const nullValue = "q=&image_type=photo&orientation=horizontal&safesearch=true&per_page=40"
+
+    if (fullKey === nullValue || fullKey === "") {
+        emptyValue()
+        return
+    }
 
     fetchCard()
         .then(data => {
-            console.log(data);
+            // console.log(data);
             if (data.total >= 1) {
                 makeCard(data)
                 Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
@@ -63,12 +69,12 @@ function submitInfo(event) {
 }
 
 async function fetchCard() {
-    const dataResponce = await axios.get(`${URL}&${ourObject}&page=${page}`)
+    const dataResponce = await axios.get(`${URL}&${fullKey}&page=${page}`)
     return dataResponce.data
 }
 
 function makeCard(data) {
-    console.log(data);
+    // console.log(data);
     let markup = (data.hits).map(value => `
         <div class="gallery photo-card">
                 <a href = "${value.largeImageURL}">
@@ -99,5 +105,10 @@ function makeCard(data) {
 
 function noPages() {
     Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-    // document.querySelector('.country-list').innerHTML = "";
+    cardRef.innerHTML = "";
+}
+
+function emptyValue() {
+    Notiflix.Notify.warning('you must enter at least one letter.');
+    cardRef.innerHTML = "";
 }
