@@ -3,10 +3,11 @@ body {
 }
 button{
   background-color: rgba(114, 114, 139, 0.659);
+  margin-right: 10px;
 }
-.load-more{
+.buttons{
   display: flex;
-  margin: 0 auto;
+  justify-content: center;
 }
 
 .search-form {

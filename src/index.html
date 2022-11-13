@@ -7,7 +7,7 @@
     <title>Homework 11</title>
   </head>
   <body>
-    <form class="search-form" id="search-form">
+    <form id="start" class="search-form" id="search-form">
       <input
         type="text"
         name="searchQuery"
@@ -32,9 +32,16 @@
     <div class="gallery">
       <!-- Карточки изображений -->
     </div>
-    <button type="button" class="load-more" style="visibility: hidden">
-      Load more
-    </button>
+    <div class="buttons">
+      <button type="button" class="load-more" style="visibility: hidden">
+        Load more
+      </button>
+      <a href="#start">
+        <button type="button" class="start" style="visibility: hidden">
+          Back to START
+        </button>
+      </a>
+    </div>
 
     <script src="index.js" type="module"></script>
   </body>

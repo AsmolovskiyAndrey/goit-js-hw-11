@@ -9,6 +9,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const formRef = document.querySelector('.search-form')
 const cardRef = document.querySelector('.gallery')
 const loadMoreRef = document.querySelector('.load-more')
+const startRef = document.querySelector('.start')
 
 
 const URL = 'https://pixabay.com/api/?key=31273147-56325c5e652f187dddce9fa62'
@@ -20,20 +21,23 @@ formRef.addEventListener('input', getInfo)
 formRef.addEventListener('submit', submitInfo)
 cardRef.addEventListener('click', onClick);
 loadMoreRef.addEventListener('click', loadMore);
+startRef.addEventListener('click', goToStart);
 
 function onClick(evt) { //? отмена действий от браузера по умолчанию
     evt.preventDefault();
 }
 
 function loadMore() {
+    loadMoreRef.style.visibility = "hidden";
+    startRef.style.visibility = "hidden";
     page += 1;
     fetchCard().then(data => {
-        console.log(data.hits.length);
         if (data.hits.length > 0) {
             makeCard(data)
         }
         else {
             loadMoreRef.style.visibility = "hidden";
+            startRef.style.visibility = "hidden";
             Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
         }
     })
@@ -48,6 +52,7 @@ function submitInfo(event) {
     page = 1
     cardRef.innerHTML = "";
     loadMoreRef.style.visibility = "hidden";
+    startRef.style.visibility = "hidden";
     const nullValue = "q=&image_type=photo&orientation=horizontal&safesearch=true&per_page=40"
 
     if (fullKey === nullValue || fullKey === "") {
@@ -57,11 +62,11 @@ function submitInfo(event) {
 
     fetchCard()
         .then(data => {
-            // console.log(data);
             if (data.total >= 1) {
                 makeCard(data)
                 Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
                 loadMoreRef.style.visibility = "visible";
+                startRef.style.visibility = "visible";
             } else {
                 noPages()
             }
@@ -74,7 +79,6 @@ async function fetchCard() {
 }
 
 function makeCard(data) {
-    // console.log(data);
     let markup = (data.hits).map(value => `
         <div class="gallery photo-card">
                 <a href = "${value.largeImageURL}">
@@ -100,7 +104,9 @@ function makeCard(data) {
             </div>
         </div>
             `).join('')
-                cardRef.insertAdjacentHTML('beforeend', markup);
+    cardRef.insertAdjacentHTML('beforeend', markup);
+    loadMoreRef.style.visibility = "visible";
+    startRef.style.visibility = "visible";
 }
 
 function noPages() {
@@ -111,4 +117,8 @@ function noPages() {
 function emptyValue() {
     Notiflix.Notify.warning('you must enter at least one letter.');
     cardRef.innerHTML = "";
+}
+
+function goToStart() {
+    startRef.style.visibility = "hidden";
 }
