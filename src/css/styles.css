@@ -4,6 +4,10 @@ body {
 button{
   background-color: rgba(114, 114, 139, 0.659);
 }
+.load-more{
+  display: flex;
+  margin: 0 auto;
+}
 
 .search-form {
   display: flex;

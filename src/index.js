@@ -7,34 +7,41 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 
 const formRef = document.querySelector('.search-form')
 const cardRef = document.querySelector('.gallery')
+const loadMoreRef = document.querySelector('.load-more')
 
 
 const URL = 'https://pixabay.com/api/?key=31273147-56325c5e652f187dddce9fa62'
 let ourObject = ''
-let bigObj = []
+let lightbox = new SimpleLightbox('.gallery a');
+let page = 1;
 
 formRef.addEventListener('input', getInfo)
 formRef.addEventListener('submit', submitInfo)
 cardRef.addEventListener('click', onClick);
+loadMoreRef.addEventListener('click', loadMore);
 
 function onClick(evt) { //? отмена действий от браузера по умолчанию
     evt.preventDefault();
 }
 
-function getInfo(event) {
-    // console.log(event.target.value);
-    ourObject = `q=${event.target.value.trim()}&image_type=photo&orientation=horizontal&safesearch=true`;
+function loadMore() {
+    page += 1;
+    fetchCard().then(data => {
+        console.log(data.hits.length);
+        makeCard(data)
+    })
 }
 
-// let lightbox = new SimpleLightbox('.gallery a', { captionsData: "alt", captionDelay: 250 }); //!создаст слайдер с задержкой и подписью сверху
-let lightbox = new SimpleLightbox('.gallery a');
-
+function getInfo(event) {
+    ourObject = `q=${event.target.value.trim()}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40`;
+}
 
 function submitInfo(event) {
     event.preventDefault()
     // console.log(ourObject);
     fetchCard()
         .then(data => {
+            console.log(data);
             if (data.total >= 1) {
                 makeCard(data)
             } else {
@@ -44,7 +51,7 @@ function submitInfo(event) {
 }
 
 function fetchCard() {
-    return fetch(`${URL}&${ourObject}`)
+    return fetch(`${URL}&${ourObject}&page=${page}`)
         .then(responce => {
             if (!responce.ok) {
                 throw new Error(responce.statusText);
@@ -56,7 +63,7 @@ function fetchCard() {
 function makeCard(data) {
     console.log(data);
     let markup = (data.hits).map(value => `
-        <div class="photo-card">
+        <div class="gallery photo-card">
                 <a href = "${value.largeImageURL}">
                     <img class="small_image" src="${value.webformatURL}" alt="${value.tags}" loading="lazy" />
                 </a>
@@ -80,7 +87,7 @@ function makeCard(data) {
             </div>
         </div>
             `).join('')
-                cardRef.innerHTML = markup;
+                cardRef.insertAdjacentHTML('beforeend', markup);
 }
 
 function noPages() {
