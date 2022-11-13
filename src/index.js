@@ -8,7 +8,6 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 
 const formRef = document.querySelector('.search-form')
 const cardRef = document.querySelector('.gallery')
-const loadMoreRef = document.querySelector('.load-more')
 const startRef = document.querySelector('.start')
 
 
@@ -20,7 +19,6 @@ let page = 1;
 formRef.addEventListener('input', getInfo)
 formRef.addEventListener('submit', submitInfo)
 cardRef.addEventListener('click', onClick);
-loadMoreRef.addEventListener('click', loadMore);
 startRef.addEventListener('click', goToStart);
 
 function onClick(evt) { //? отмена действий от браузера по умолчанию
@@ -28,17 +26,15 @@ function onClick(evt) { //? отмена действий от браузера 
 }
 
 function loadMore() {
-    loadMoreRef.style.visibility = "hidden";
-    startRef.style.visibility = "hidden";
+    startRef.classList.add("hidden");
     page += 1;
     fetchCard().then(data => {
         if (data.hits.length > 0) {
             makeCard(data)
         }
         else {
-            loadMoreRef.style.visibility = "hidden";
-            startRef.style.visibility = "hidden";
             Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+            return
         }
     })
 }
@@ -51,8 +47,6 @@ function submitInfo(event) {
     event.preventDefault()
     page = 1
     cardRef.innerHTML = "";
-    loadMoreRef.style.visibility = "hidden";
-    startRef.style.visibility = "hidden";
     const nullValue = "q=&image_type=photo&orientation=horizontal&safesearch=true&per_page=40"
 
     if (fullKey === nullValue || fullKey === "") {
@@ -65,8 +59,6 @@ function submitInfo(event) {
             if (data.total >= 1) {
                 makeCard(data)
                 Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-                loadMoreRef.style.visibility = "visible";
-                startRef.style.visibility = "visible";
             } else {
                 noPages()
             }
@@ -105,8 +97,6 @@ function makeCard(data) {
         </div>
             `).join('')
     cardRef.insertAdjacentHTML('beforeend', markup);
-    loadMoreRef.style.visibility = "visible";
-    startRef.style.visibility = "visible";
 }
 
 function noPages() {
@@ -120,10 +110,18 @@ function emptyValue() {
 }
 
 function goToStart() {
-    // startRef.style.visibility = "hidden";
     window.scrollTo({ //! плавный скрол вверх
         top: 0,
         left: 0,
         behavior: "smooth",
     })
+    startRef.classList.remove("hidden");
 }
+
+window.addEventListener('scroll',()=> { //! бесконечный скролл
+    const { scrollHeight, scrollTop, clientHeight } = document.documentElement
+
+    if (scrollTop >= scrollHeight - clientHeight - 0.5) {
+        loadMore()
+    }
+})
