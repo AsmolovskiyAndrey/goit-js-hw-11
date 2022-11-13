@@ -120,5 +120,10 @@ function emptyValue() {
 }
 
 function goToStart() {
-    startRef.style.visibility = "hidden";
+    // startRef.style.visibility = "hidden";
+    window.scrollTo({ //! плавный скрол вверх
+        top: 0,
+        left: 0,
+        behavior: "smooth",
+    })
 }
