@@ -1,5 +1,6 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
+import axios from 'axios';
 import SimpleLightbox from 'simplelightbox';
 // Дополнительный импорт стилей
 import "simplelightbox/dist/simple-lightbox.min.css";
@@ -28,7 +29,13 @@ function loadMore() {
     page += 1;
     fetchCard().then(data => {
         console.log(data.hits.length);
-        makeCard(data)
+        if (data.hits.length > 0) {
+            makeCard(data)
+        }
+        else {
+            loadMoreRef.style.visibility = "hidden";
+            Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
+        }
     })
 }
 
@@ -38,26 +45,26 @@ function getInfo(event) {
 
 function submitInfo(event) {
     event.preventDefault()
-    // console.log(ourObject);
+    page = 1
+    cardRef.innerHTML = "";
+    loadMoreRef.style.visibility = "hidden";
+
     fetchCard()
         .then(data => {
             console.log(data);
             if (data.total >= 1) {
                 makeCard(data)
+                Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+                loadMoreRef.style.visibility = "visible";
             } else {
                 noPages()
             }
         })
 }
 
-function fetchCard() {
-    return fetch(`${URL}&${ourObject}&page=${page}`)
-        .then(responce => {
-            if (!responce.ok) {
-                throw new Error(responce.statusText);
-                }
-            return responce.json();
-            });
+async function fetchCard() {
+    const dataResponce = await axios.get(`${URL}&${ourObject}&page=${page}`)
+    return dataResponce.data
 }
 
 function makeCard(data) {
